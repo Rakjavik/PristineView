@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PristineView:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PristineView_jar</output-path>
+    <root id="archive" name="PristineView.jar">
+      <element id="module-output" name="PristineView" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pristine Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+    <script src="js/pristine.js"></script>
+    <style>
+        /* Remove the navbar's default rounded borders and increase the bottom margin */
+        .navbar {
+            margin-bottom: 50px;
+            border-radius: 0;
+        }
+
+        /* Remove the jumbotron's default bottom margin */
+        .jumbotron {
+            margin-bottom: 0;
+        }
+
+        /* Add a gray background color and some padding to the footer */
+        footer {
+            background-color: #f2f2f2;
+            padding: 25px;
+        }
+    </style>
+</head>
+<body ng-app="pristine" ng-controller="pristineController as ctrl">
+<div>
+    <div class="jumbotron">
+        <div class="container text-center">
+            <h1>Pristine Dashboard</h1>
+
+            <p>ZJ</p>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--<a class="navbar-brand" href="#">Logo</a>-->
+            </div>
+            <!--<div class="collapse navbar-collapse" id="myNavbar" ng-hide="true">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">Deals</a></li>
+                    <li><a href="#">Stores</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                </ul>
+            </div>-->
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4" ng-repeat="host in list track by $index">
+                <div style="text-align:center" class="panel panel-primary">
+                    <div class="panel-heading">{{host.hostname}}</div>
+                    <div class="panel-body"><img ng-src="{{host.imageSource}}" ng-click="getDetails($index)" ngAudio>
+                        <img src="images/record.png" style="width: 56px;height:50px;" ng-show="list[$index].recording"/>
+                    </div>
+                    <div class="panel-footer" ng-click="getDetails($index)">{{host.ip}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" ng-show="details">
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align: center;">Resume Netflix</div>
+                        <div class="panel-body"><img src="/images/netflix.png"
+                                                     class="img-responsive text-align: center;"
+                                                     ng-click="sendFlix()" alt="Image"></div>
+                        <div class="panel-footer text-center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align: center;">Listen to Mic</div>
+                        <div class="panel-body"><img src="/images/microphone-icon--icon-search-engine-9.png" class=""
+                                                     style="width:56px;height:50px;text-align: center;"
+                                                     ng-click="sendListen()" alt="Image">
+                            <img src="/images/micoff.png" class="" style="width:56px;height:50px;text-align: center;"
+                                 ng-click="sendListenOff()" alt="Image">
+                        </div>
+                        <div class="panel-footer text-center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align: center;">Say (text to speech)</div>
+                        <div class="panel-body"><input type="text" style="width:133px;height:50px;text-align: center;"
+                                                       ng-click="sendText()" alt="Image" ng-model="ttsString"></div>
+                        <div class="panel-footer text-center"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align: center;">Webcam</div>
+                        <div class="panel-body"><img src="/images/cam.png" class=""
+                                                     style="width:50px;height:50px;text-align: center;"
+                                                     ng-click="sendCamOn()" alt="Image">
+                            <img src="/images/camoff.png" class="" style="width:50px;height:50px;text-align: center;"
+                                 ng-click="sendCamOff()" alt="Image">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading" style="text-align: center;">Sound</div>
+                        <div class="panel-body"><img src="/images/volumeup.png" class=""
+                                                     style="width:50px;height:50px;text-align: center;"
+                                                     ng-click="sendVolumeUp()" alt="Image">
+                            <img src="/images/volumedown.png" class="" style="width:50px;height:50px;text-align: center;"
+                                 ng-click="sendVolumeDown()" alt="Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+
+            <footer class="container-fluid text-center">
+                <p>Server: {{serverHostName}}</p>
+
+                <form class="form-inline">Terminal :
+                    <input type="text" class="form-control" size="50" placeholder="Command" ng-model="command">
+                    <button class="btn btn-danger" ng-click="sendToQueue()" ng-disabled="!enableSend">Send</button>
+                    <img src="images/red.PNG" style="width:50px;height:50px;" ng-show="!responseReceived">
+                    <img src="images/yellow.PNG" style="width:50px;height:50px;" ng-show="!responseComplete && responseReceived">
+                    <img src="images/green.PNG" style="width:50px;height:50px;" ng-show="responseReceived && responseComplete">
+                </form>
+            </footer>
+        </div>
+    </div>
+</div>
+</body>
+</html>

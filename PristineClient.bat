@@ -1,0 +1,1 @@
+java -cp "PristineView.jar;lib\webcam-capture-0.3.10.jar;lib\slf4j-api-1.7.2.jar;lib\gson-2.8.1.jar;lib\cmu_us_kal.jar;lib\bridj-0.6.2.jar" com.joel.PristineClient
