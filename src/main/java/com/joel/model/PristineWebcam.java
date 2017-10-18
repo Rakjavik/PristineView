@@ -1,12 +1,9 @@
 package com.joel.model;
 
 import com.github.sarxos.webcam.*;
-import com.joel.PristineClient;
-import com.joel.misc.Utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 /**
  * Created by Tyrion on 10/17/2017.
@@ -85,20 +82,8 @@ public class PristineWebcam implements WebcamMotionListener {
         webcam.setViewSize(dimension);
     }
 
-    public WebcamMotionDetector getDetector() {
-        return detector;
-    }
-
-    public void setDetector(WebcamMotionDetector detector) {
-        this.detector = detector;
-    }
-
     public long getTimeSinceLastMotion() {
         return timeSinceLastMotion;
-    }
-
-    public void setTimeSinceLastMotion(long timeSinceLastMotion) {
-        this.timeSinceLastMotion = timeSinceLastMotion;
     }
 
     public int getMotionRecordTimeout() {

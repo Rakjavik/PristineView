@@ -48,10 +48,6 @@ public class PristineHost {
         return currentShot;
     }
 
-    public void setFreeSpace(Long freeSpace) {
-        this.freeSpace = freeSpace;
-    }
-
     public void setFreeMemory(Long freeMemory) {
         this.freeMemory = freeMemory;
     }

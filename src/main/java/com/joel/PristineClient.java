@@ -1,24 +1,19 @@
 package com.joel;
 
-import com.github.sarxos.webcam.*;
+import com.github.sarxos.webcam.WebcamLockException;
 import com.joel.misc.Utils;
 import com.joel.model.PristineHost;
 import com.joel.model.PristineRequest;
 import com.joel.model.PristineWebcam;
 import com.joel.threads.PollQueueThread;
 import com.joel.threads.PristineWritingThread;
-import com.joel.threads.SendAudioThread;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -36,7 +31,6 @@ public class PristineClient {
     public static String serverIP = "10.0.0.77";
     public static Dimension resolution;
     private int serverPort = 4444;
-    private int sendSystemDetailsEvery = 5000;
 
     private Socket socket;
     private static String hostname;
@@ -48,7 +42,6 @@ public class PristineClient {
 
 
     private String myIP = null;
-    private Long freeDiskSpace;
     private PollQueueThread pollQueueThread;
 
 
@@ -83,8 +76,7 @@ public class PristineClient {
 
     private void loop() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         PristineHost me = new PristineHost(hostname,myIP);
-        int timePassed = 0;
-        long elapsedTime = 0;
+        int timePassedSinceLastFrameSent = 0; //
 
         if(webcam == null) {
             webcam = PristineWebcam.getInstance(me);
@@ -127,8 +119,8 @@ public class PristineClient {
             }
             // Generate request to send to server //
             PristineRequest request = new PristineRequest();
-            if(timePassed > webcam.getSendFrameEvery() && webcam.isWebcamPresent()) {
-                timePassed = 0;
+            if(timePassedSinceLastFrameSent > webcam.getSendFrameEvery() && webcam.isWebcamPresent()) {
+                timePassedSinceLastFrameSent = 0;
                 if (webcam != null) {
                     BufferedImage bufferedImage = webcam.getImage();
                     request = new PristineRequest(me);
@@ -142,7 +134,7 @@ public class PristineClient {
                     request.setFile64(Utils.encode(outputStream.toByteArray()));
                 }
             }
-            if(elapsedTime - sendSystemDetailsEvery <= 0) {
+            /*if(elapsedTime - sendSystemDetailsEvery <= 0) {
                 OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
                 Method method = operatingSystemMXBean.getClass().getDeclaredMethod("getFreePhysicalMemorySize",null);
                 method.setAccessible(true);
@@ -156,16 +148,16 @@ public class PristineClient {
                 freeDiskSpace = new File("c:/").getFreeSpace();
                 me.setFreeSpace(freeDiskSpace);
                 request.setHost(me);
-            }
+            }*/
             if(request != null && !request.isEmpty()) {
                 sendQueue.add(request);
             }
 
             long delta = System.currentTimeMillis()-currentTime;
-            elapsedTime += delta;
-            timePassed += delta;
+            timePassedSinceLastFrameSent += delta;
             if(webcam.isDetectMotion()) {
                 webcam.incrementTimeSinceLastMotion(delta);
+                // If no motion is detected for motionrecordtimeout, set recording to false //
                 if (webcam.getTimeSinceLastMotion() > webcam.getMotionRecordTimeout() && webcam.isRecordStarted()) {
                     webcam.setRecordStarted(false);
                     webcam.setClientRecording(false);
@@ -185,10 +177,6 @@ public class PristineClient {
 
     public static void setSendWebcam(boolean sendWebcam) {
         webcam.setSendWebcam(sendWebcam);
-    }
-
-    public static String getHostname() {
-        return hostname;
     }
 
     public static void main (String[] args) throws InterruptedException, IOException {

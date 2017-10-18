@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -90,12 +89,6 @@ public class Utils {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
-    }
-
-    public static String getStringFromFileSize(int size){
-        final String[] units = new String[] { "B", "kB", "MB", "GB", "TB" };
-        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
-        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     public static String getHTTP(String urlToRead) throws Exception {

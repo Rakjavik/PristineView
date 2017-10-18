@@ -33,7 +33,4 @@ public class PristineWritingThread extends Thread {
         }
     }
 
-    public PristineRequest getRequest() {
-        return request;
-    }
 }

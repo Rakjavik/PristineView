@@ -25,7 +25,6 @@ public class PristineServer {
     private ServerSocket serverSocket;
 
     private Socket clientSocket;
-    private static String hostname;
     private boolean running;
     private static Logger logger;
     private static ArrayList<PristineHost> hosts;
@@ -38,7 +37,6 @@ public class PristineServer {
         running = true;
         logger = Logger.getLogger(this.getClass().getName());
         logger.addHandler(new FileHandler("c:/temp/log.log"));
-        hostname = System.getProperty("userdomain");
         test();
         loop();
     }
@@ -89,20 +87,11 @@ public class PristineServer {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        hostname = System.getenv("userdomain");
         try {
             PristineServer server = new PristineServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void setRecording(String hostname,boolean recording) {
-        PristineServer.getHost(hostname).setRecording(recording);
-    }
-
-    public static boolean getRecoding(String hostname) {
-        return PristineServer.getHost(hostname).isRecording();
     }
 
     public static PristineHost getHost(String hostname) {
