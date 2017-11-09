@@ -3,6 +3,10 @@ package com.joel.misc;
 import com.google.gson.Gson;
 import com.joel.PristineClient;
 import com.joel.model.PristineRequest;
+import com.joel.servlets.PristineServlet;
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
+import edu.cmu.sphinx.api.SpeechResult;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -93,13 +97,13 @@ public class Utils {
 
     public static String getHTTP(String urlToRead) throws Exception {
         StringBuilder result = new StringBuilder();
-        URL url = new URL(urlToRead);
+        String newString = urlToRead.substring(0,urlToRead.indexOf("8080/")+5) + PristineServlet.CONTEXT_ROOT + urlToRead.substring(urlToRead.indexOf("8080/")+5);
+        URL url = new URL(newString);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
         conn.setRequestProperty("Accept","*/*");
-
 
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
@@ -119,5 +123,9 @@ public class Utils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Utils.getHTTP("http://10.0.0.100:8080/this/part");
     }
 }

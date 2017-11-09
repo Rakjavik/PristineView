@@ -35,10 +35,10 @@ var ctrl = app.controller('pristineController',function($scope,$http,$interval,$
                 var additionalInfo = response.data.additionalInfo;
                 console.log("Notify received - " + additionalInfo);
 
-                if(additionalInfo == 'received') {
+                if(additionalInfo.includes('received') ) {
                     $scope.responseReceived = true;
                 }
-                else if (additionalInfo == 'complete') {
+                else if (additionalInfo.includes('complete')) {
                     $scope.responseComplete = true;
                     $scope.enableSend = true;
                 }
@@ -154,6 +154,7 @@ var ctrl = app.controller('pristineController',function($scope,$http,$interval,$
     $scope.sendVolumeDown = function() {
         $scope.command = "{'requestType':'volumedown','host' :{'hostname':'" + $scope.list[$scope.selected].hostname +  "'}}";
     }
+
     console.log("Initializing");
     $scope.list = []; // List of hosts
     $scope.serverHostName = $location.host();

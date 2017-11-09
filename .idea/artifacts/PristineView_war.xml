@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="PristineView:war">
+    <output-path>$PROJECT_DIR$/out/artifacts/PristineView_war</output-path>
+    <root id="archive" name="PristineView_war.war">
+      <element id="artifact" artifact-name="PristineView:war exploded" />
+    </root>
+  </artifact>
+</component>

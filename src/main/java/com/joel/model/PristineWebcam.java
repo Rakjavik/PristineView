@@ -13,13 +13,12 @@ public class PristineWebcam implements WebcamMotionListener {
     private static PristineWebcam instance;
 
     private PristineHost host;
-    private boolean webcamPresent = true;
-    private boolean sendWebCam = true;
     private boolean detectMotion = true;
     private boolean recordStarted = false;
     private int sendFrameEvery = 200;
     private int motionRecordTimeout = 5000; // Time until a notice is sent to server that there is no more motion
     private long timeSinceLastMotion = 0;
+    private boolean streamingToServer = true;
 
     private Webcam webcam;
     private WebcamMotionDetector detector;
@@ -38,13 +37,9 @@ public class PristineWebcam implements WebcamMotionListener {
             detector = new WebcamMotionDetector(webcam);
             detector.setInterval(sendFrameEvery);
             detector.addMotionListener(this);
-        }catch(WebcamLockException ex) {
+        } catch (WebcamLockException ex) {
             throw ex;
         }
-    }
-
-    public void setSendWebcam(boolean sendWebCam){
-        this.sendWebCam = sendWebCam;
     }
 
     public void incrementTimeSinceLastMotion(long delta) {
@@ -66,6 +61,7 @@ public class PristineWebcam implements WebcamMotionListener {
             host.setRecording(true);
             if(!recordStarted) {
                 recordStarted = true;
+                sendFrameEvery = 50;
             }
         }
     }
@@ -102,19 +98,23 @@ public class PristineWebcam implements WebcamMotionListener {
         return detectMotion;
     }
 
-    public boolean isWebcamPresent() {
-        return webcamPresent;
-    }
-
-    public void setWebcamPresent(boolean webcamPresent) {
-        this.webcamPresent = webcamPresent;
-    }
-
     public boolean isRecordStarted(){
         return recordStarted;
     }
 
     public void setClientRecording(boolean status) {
         host.setRecording(status);
+    }
+
+    public void setSendFrameEvery(int sendFrameEvery) {
+        this.sendFrameEvery = sendFrameEvery;
+    }
+
+    public void setStreamingToServer(boolean streamingToServer) {
+        this.streamingToServer = streamingToServer;
+    }
+
+    public boolean isStreamingToServer() {
+        return streamingToServer;
     }
 }

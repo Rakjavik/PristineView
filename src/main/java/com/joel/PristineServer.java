@@ -36,7 +36,7 @@ public class PristineServer {
         clientRequests = new ArrayList<>();
         running = true;
         logger = Logger.getLogger(this.getClass().getName());
-        logger.addHandler(new FileHandler("c:/temp/log.log"));
+        logger.addHandler(new FileHandler(System.getProperty("user.dir") + "/ServerLog.log"));
         test();
         loop();
     }

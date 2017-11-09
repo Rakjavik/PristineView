@@ -34,6 +34,7 @@ public class PristineServlet extends HttpServlet {
     public static final String PROPS_HOST_NAME = "hostname";
     public static final String PROPS_HOST = "host";
     public static final String PROPS_UPDATE = "update";
+    public static final String CONTEXT_ROOT = "";
 
     public PristineServlet() throws IOException, InterruptedException {
         super();
