@@ -1,23 +1,20 @@
 package com.joel;
 
-import com.github.sarxos.webcam.WebcamLockException;
 import com.joel.misc.Utils;
 import com.joel.model.PristineHost;
 import com.joel.model.PristineRequest;
 import com.joel.model.PristineWebcam;
 import com.joel.threads.PollQueueThread;
 import com.joel.threads.PristineWritingThread;
-import com.xuggle.mediatool.ToolFactory;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
@@ -28,15 +25,18 @@ public class PristineClient {
 
     private Logger logger;
 
-    public static int buffersize = 1024;
-    public static String serverIP = "10.0.0.77";
+    public static int buffersize;
+    public static String serverIP;
     public static Dimension resolution;
-    private int serverPort = 4444;
+    public static Properties properties;
+    public static int serverAudioPort;
+
+    private int serverPort;
 
     private Socket socket;
     private static String hostname;
     private boolean running;
-    private int delay = 50;
+    private int delay;
     private LinkedList<PristineRequest> sendQueue;
     private static PristineWebcam webcam;
 
@@ -47,10 +47,19 @@ public class PristineClient {
 
 
     public PristineClient() throws InterruptedException, IOException {
+        properties = new Properties();
         sendQueue = new LinkedList<>();
         running = true;
         logger = Logger.getLogger(this.getClass().getName());
         logger.addHandler(new FileHandler(System.getProperty("user.dir") + "/ClientLog.log"));
+        logger.info(new String("Looking in {0} for properties").replace("{0}", System.getProperty("user.dir")));
+        properties.load(new FileInputStream(System.getProperty("user.dir") + "/pristine.properties"));
+        Utils.setLoggingLevel(Integer.parseInt(properties.getProperty("loggingLevel")));
+        serverIP = properties.getProperty("serverAddress");
+        serverPort = Integer.parseInt(properties.getProperty("serverPort"));
+        buffersize = Integer.parseInt(properties.getProperty("bufferSize"));
+        delay = Integer.parseInt(properties.getProperty("clientLoopDelay"));
+        serverAudioPort = Integer.parseInt(properties.getProperty("serverAudioPort"));
         resolution = Toolkit.getDefaultToolkit().getScreenSize();
         myIP = InetAddress.getLocalHost().getHostAddress();
         // Virtual box adapter //

@@ -7,12 +7,14 @@ import com.joel.threads.PristineReadingThread;
 import com.joel.threads.ReadAudioThread;
 
 import java.awt.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
@@ -21,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class PristineServer {
 
-    private int delay = 10;
+    private int delay;
     private ServerSocket serverSocket;
 
     private Socket clientSocket;
@@ -31,20 +33,30 @@ public class PristineServer {
     private static List<PristineRequest> clientRequests;
     private static ReadAudioThread readAudioThread;
 
+    public static Properties properties = new Properties();
+    public static int bufferSize;
+    public static int readAudioPort;
+
     public PristineServer() throws IOException, InterruptedException {
         hosts = new ArrayList<>();
         clientRequests = new ArrayList<>();
         running = true;
         logger = Logger.getLogger(this.getClass().getName());
         logger.addHandler(new FileHandler(System.getProperty("user.dir") + "/ServerLog.log"));
+        properties.load(new FileInputStream(System.getProperty("user.dir") + "/pristine.properties"));
+        delay = Integer.parseInt(properties.getProperty("serverLoopDelay"));
+        bufferSize = Integer.parseInt(properties.getProperty("bufferSize"));
+        readAudioPort = Integer.parseInt(properties.getProperty("serverAudioPort"));
+        Utils.setLoggingLevel(Integer.parseInt(properties.getProperty("loggingLevel")));
         test();
         loop();
     }
 
     private void loop() throws IOException, InterruptedException {
+        int socketPort = Integer.parseInt(properties.getProperty("serverPort"));
         while (running) {
             // Open socket //
-            serverSocket = new ServerSocket(4444);
+            serverSocket = new ServerSocket(socketPort);
 
             Utils.log("Listening for connection", logger);
             clientSocket = serverSocket.accept();

@@ -122,6 +122,19 @@ public class Utils {
         return null;
     }
 
+    public static void setLoggingLevel(int level) {
+        if(level == 0) {
+            debug = false;
+            verbose = false;
+        } else if (level == 1) {
+            debug = false;
+            verbose = true;
+        } else if (level == 2) {
+            debug = true;
+            verbose = true;
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         Utils.getHTTP("http://10.0.0.100:8080/this/part");
     }

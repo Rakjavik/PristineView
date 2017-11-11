@@ -83,7 +83,7 @@ public class PollQueueThread extends Thread {
             }
         } else if(request.getRequestType().equals(PristineRequest.RT_LISTEN)) {
             logger.info("Listen command received, connecting to server");
-            sendAudioThread = new SendAudioThread(logger,4445);
+            sendAudioThread = new SendAudioThread(logger,PristineClient.serverAudioPort);
             sendAudioThread.start();
             logger.info("Making connection");
         } else if (request.getRequestType().equals(PristineRequest.RT_MIC_STOP)) {

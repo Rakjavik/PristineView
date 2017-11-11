@@ -28,7 +28,7 @@ public class SendAudioThread extends AbstractAudioThread {
         targetDataLine = null;
         Socket socket = null;
         try {
-            socket = new Socket(PristineClient.serverIP,4445);
+            socket = new Socket(PristineClient.serverIP,PristineClient.serverAudioPort);
             socket.setSoTimeout(1000);
         } catch (IOException e) {
             e.printStackTrace();

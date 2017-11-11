@@ -107,7 +107,7 @@ public class PristineServlet extends HttpServlet {
             PristineServer.addRequestToQueue(request);
             if(request.getRequestType().equals(PristineRequest.RT_LISTEN)) {
                 Utils.debug("Mic start request from" + request.getHost().getHostname(), getClass().getName(), logger);
-                server.setReadAudioThread(new ReadAudioThread(logger, 4445), true);
+                server.setReadAudioThread(new ReadAudioThread(logger, PristineServer.readAudioPort), true);
             }
             else if (request.getRequestType().equals(PristineRequest.RT_MIC_STOP)) {
                 Utils.debug("Mic stop request from" + request.getHost().getHostname(),getClass().getName(),logger);

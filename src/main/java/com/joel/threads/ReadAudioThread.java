@@ -1,6 +1,7 @@
 package com.joel.threads;
 
 import com.joel.PristineClient;
+import com.joel.PristineServer;
 import com.joel.misc.Utils;
 import com.joel.model.AbstractAudioThread;
 
@@ -27,7 +28,7 @@ public class ReadAudioThread extends AbstractAudioThread {
     public void run() {
         Utils.log("Read Audio Thread started",logger);
         try {
-            serverSocket = new ServerSocket(4445);
+            serverSocket = new ServerSocket(PristineServer.readAudioPort);
             Socket clientSocket = serverSocket.accept();
 
             SourceDataLine sourceDataLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
