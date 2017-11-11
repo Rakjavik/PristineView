@@ -57,8 +57,8 @@ public class PristineServer {
                 Utils.debug("Request received " + readingThread.getRequest(), this.getClass().getName(), logger);
                 PristineRequest request = readingThread.getRequest();
                 PristineHost host = getHost(request.getHost().getHostname());
+                logHost(request);
                 if (request.getHost() != null) {
-                    logHost(request);
                     Image image = request.decodeAndGetImage();
                     if (image != null && host != null) {
                         host.setCurrentShot(image);
@@ -104,13 +104,28 @@ public class PristineServer {
     }
 
     private boolean logHost(PristineRequest request) {
-        for (int count = 0; count < hosts.size(); count++) {
-            if (hosts.get(count).getHostname().equals(request.getHost().getHostname())) {
+        boolean entryExists = false;
+        // Loop through known hosts //
+        for(int count = 0; count < hosts.size(); count++){
+            // Request is for currently known host //
+            if(request.getHost().getHostname().equals(hosts.get(count).getHostname())) {
+                hosts.get(count).setTimeOfLastSentRequest(System.currentTimeMillis());
+                hosts.get(count).setConnected(true);
                 hosts.get(count).setRecording(request.getHost().isRecording());
-                return true;
+                entryExists = true;
+            }
+            // Request is for other logged host //
+            else {
+                if(hosts.get(count).isConnected() && (System.currentTimeMillis() - hosts.get(count).getTimeOfLastSentRequest()) > 30000) {
+                    hosts.get(count).setConnected(false);
+                    logger.info(hosts.get(count).getHostname() + " - DISCONNECTED");
+                }
             }
         }
-        hosts.add(request.getHost());
+        if(!entryExists) {
+            hosts.add(request.getHost());
+            logger.info(request.getHost().getHostname() + " - ADDED TO host list");
+        }
         return true;
     }
 
@@ -118,7 +133,7 @@ public class PristineServer {
     public static PristineHost[] getHostLists() {
         List<PristineHost> hostsList = new LinkedList<>();
         for (int count = 0; count < hosts.size(); count++) {
-            if (hosts.get(count).getHostname() != null && hosts.get(count).getIp() != null) {
+            if (hosts.get(count).isConnected()) {
                 hostsList.add(hosts.get(count));
             }
         }

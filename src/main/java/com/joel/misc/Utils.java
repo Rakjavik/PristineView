@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.joel.PristineClient;
 import com.joel.model.PristineRequest;
 import com.joel.servlets.PristineServlet;
-import edu.cmu.sphinx.api.Configuration;
-import edu.cmu.sphinx.api.LiveSpeechRecognizer;
-import edu.cmu.sphinx.api.SpeechResult;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -25,7 +22,7 @@ public class Utils {
     private static Gson gson = new Gson();
 
 
-    private static boolean verbose = true;
+    private static boolean verbose = false;
     private static boolean debug = false;
 
     public static boolean writePristineRequest(PristineRequest request,OutputStream out,Logger logger) throws IOException {

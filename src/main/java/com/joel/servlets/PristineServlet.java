@@ -65,7 +65,7 @@ public class PristineServlet extends HttpServlet {
             return;
         }
         Map<String, String> arguments = Utils.splitQuery(req.getQueryString());
-        Utils.log("Arguments - " + arguments.toString(),logger);
+        Utils.debug("Arguments - " + arguments.toString(),getClass().getName(),logger);
         if(arguments.get(PROPS_REQUEST_TYPE).equals(PristineRequest.RT_IMAGE_UPLOAD)) {
             Image image = null;
             PristineHost host = null;

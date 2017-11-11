@@ -36,7 +36,6 @@ public class PristineClient {
     private Socket socket;
     private static String hostname;
     private boolean running;
-    private boolean webcamPresent = true;
     private int delay = 50;
     private LinkedList<PristineRequest> sendQueue;
     private static PristineWebcam webcam;
@@ -78,24 +77,15 @@ public class PristineClient {
 
     private void loop() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         PristineHost me = new PristineHost(hostname,myIP);
-        int timePassedSinceLastFrameSent = 0; //
 
-        if(webcam == null && webcamPresent) {
-            webcam = PristineWebcam.getInstance(me);
-
-            webcam.setViewSize(new Dimension(320, 240));
-            try {
-                webcam.open();
-                Utils.debug("Webcam found", this.getClass().getName(), logger);
-
-                if (webcam.isDetectMotion()) {
-                    webcam.startMotionListener();
-                }
-
-            } catch (WebcamLockException ex) {
-                webcamPresent = false;
-            }
+        webcam = PristineWebcam.getInstance(me,logger);
+        webcam.setViewSize(new Dimension(320, 240));
+        webcam.open();
+        Utils.debug("Webcam found", this.getClass().getName(), logger);
+        if (webcam.isDetectMotion()) {
+            webcam.startMotionListener();
         }
+        long delta = 0;
         while(running) {
             long currentTime = System.currentTimeMillis();
             // Send queue for Socket connection to server //
@@ -122,40 +112,17 @@ public class PristineClient {
             }
             // Generate request to send to server //
             PristineRequest request = new PristineRequest();
-            if(webcamPresent && timePassedSinceLastFrameSent > webcam.getSendFrameEvery() && webcam.isStreamingToServer()) {
-                timePassedSinceLastFrameSent = 0;
-                if (webcam != null) {
-                    BufferedImage bufferedImage = webcam.getImage();
-                    request = new PristineRequest(me);
-                    request.setFilename("png");
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(bufferedImage, "png", outputStream);
-                    } catch (IOException e) {
-                        Utils.log(e.getMessage(), logger);
-                    }
-                    request.setFile64(Utils.encode(outputStream.toByteArray()));
-                }
+            if(webcam.isEnabled()) {
+                request = webcam.loop(me,request, (int) delta);
             }
             // If no webcam then just write a blank request to let the server know we exist //
             if(request.isEmpty() && currentTime % 5000 == 0) {
                 request.setHost(me);
             }
-            if(request != null && !request.isEmpty()) {
+            if(!request.isEmpty()) {
                 sendQueue.add(request);
             }
-
-            long delta = System.currentTimeMillis()-currentTime;
-            timePassedSinceLastFrameSent += delta;
-            if(webcamPresent && webcam.isDetectMotion()) {
-                webcam.incrementTimeSinceLastMotion(delta);
-                // If no motion is detected for motionrecordtimeout, set recording to false //
-                if (webcam.getTimeSinceLastMotion() > webcam.getMotionRecordTimeout() && webcam.isRecordStarted()) {
-                    webcam.setRecordStarted(false);
-                    webcam.setClientRecording(false);
-                    webcam.setSendFrameEvery(200);
-                }
-            }
+            delta = System.currentTimeMillis()-currentTime;
         }
         try {
             Thread.sleep(delay);

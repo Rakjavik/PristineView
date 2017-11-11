@@ -7,32 +7,15 @@ import java.awt.*;
  */
 public class PristineHost {
     private String hostname;
-    private String ip;
     private transient Image currentShot;
-    private String cpuUsage;
-    private Long freeSpace;
-    private Long freeMemory;
     private boolean recording = false;
+    private long timeOfLastSentRequest = System.currentTimeMillis();
+    private boolean connected;
+    private String ip;
 
-
-
-
-    public PristineHost() {}
 
     public PristineHost(String hostname, String ip) {
-        this.ip = ip;
         this.hostname = hostname;
-    }
-
-    public void setCpuUsage(String cpuUsage) {
-        this.cpuUsage = cpuUsage;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
         this.ip = ip;
     }
 
@@ -48,22 +31,6 @@ public class PristineHost {
         return currentShot;
     }
 
-    public void setFreeMemory(Long freeMemory) {
-        this.freeMemory = freeMemory;
-    }
-
-    public String getCpuUsage() {
-        return cpuUsage;
-    }
-
-    public Long getFreeSpace() {
-        return freeSpace;
-    }
-
-    public Long getFreeMemory() {
-        return freeMemory;
-    }
-
     public boolean isRecording() {
         return recording;
     }
@@ -72,4 +39,19 @@ public class PristineHost {
         this.recording = recording;
     }
 
+    public void setTimeOfLastSentRequest(long timeOfLastSentRequest) {
+        this.timeOfLastSentRequest = timeOfLastSentRequest;
+    }
+
+    public long getTimeOfLastSentRequest() {
+        return timeOfLastSentRequest;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
 }
